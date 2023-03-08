@@ -4,73 +4,101 @@ class Board:
 # part 1 of the progam( building the board and the pieces)
 
     def __init__(self, row, column):
-        self.board = self.board = [[ 0 for c in range (column)] for i in range (row)]
-        self.playerOne()
-        self.playerTwo()
+        self.board = self.board = [[ 0 for c in range (column + 1)] for i in range (row + 1)]
+        self.SetplayerOne()
+        self.SetplayerTwo()
+        self.printHelper()
+        self.printRules()
 
     def printBoard(self):
         for i in self.board:
             for j in i:
                 print(j,end = " ")
             print()
+    def printHelper (self):
+        for i in range(1):
+            for j in range(7):
+                self.board[i][j] = j
+        for i in range(9):
+            for j in range(1):
+                self.board[i][j] = i
+        self.board[0][0] = '+'
 
-    def playerOne(self):
-        for i in range(3):
-            for j in range(0,6):
-                if i == 0:
+    def SetplayerOne(self):
+        for i in range(1, 4):
+            for j in range(1,7):
+                if i == 1:
                     if j%2==0:
                         self.board[i][j] = '*'
-                elif i == 1:
+                elif i == 2:
                     if j %2 == 1:
                         self.board[i][j] = "*"
-                elif i ==2:
+                elif i ==3:
                     if j%2 == 0:
                         self.board[i][j] = "*"
                 else:
                     continue
         self.nonplayablePositions()
     def nonplayablePositions(self):
-        for i in range(3, 5):
-            for j in range(0,6):
-                if i == 3:
+        for i in range(4, 6):
+            for j in range(1,7):
+                if i == 4:
                     if j%2==1:
                         self.board[i][j] = ' '
-                elif i == 4:
+                elif i == 5:
                     if j %2 == 0:
                         self.board[i][j] = ' '
                 else:
                     continue
-    def playerTwo (self):
-        for i in range(5,8):
-            for j in range(0,6):
-                if i == 5:
+    def SetplayerTwo (self):
+        for i in range(6,9):
+            for j in range(1,7):
+                if i == 6:
                     if j%2==1:
                         self.board[i][j]='#'
-                elif i ==6:
+                elif i ==7:
                     if j %2 == 0:
                         self.board[i][j]="#"
-                elif i ==7:
+                elif i ==8:
                     if j%2==1:
                         self.board[i][j]="#"
                 else:
                     continue
-                
+    def printRules(self):
+            print('Before starting the game, Let us look at some basic rules of the game')
+            time.sleep(2)
+            print('To move the Pieces: ')
+            time.sleep(2)
+            print(f"Enter the index of the pieces you want to move and where you want to move it. First select the index of the cooridante you want to me. Suppose you want to move a piece located at row 3 column 2, you should input '3,2'.")
+            time.sleep(4)
+            print("Then select the index of where you want to move the piece. Suppose you want to move a piece to row 4 column 1, you should input '4,1'")
+            time.sleep(6)
+            print('The game will end when either of the players have no moves to make or do not have any piece to move')
+            time.sleep(3)
+            print('Let us start the game')
+            time.sleep(3)
+                           
 # part 2 of the program(implementing movments of the pieces)
+    def playerOneMove(self,rO, cO, rN, cN, Error = False ):
+        if Error == False:
+            while(self.board[rO][cO] != self.board[rN][cN] and rN == rO + 1 and rN != 0 and self.board[rO][cO]=="*" and cN != 0):
 
-    def playerOneMove(self,rO, cO, rN, cN):
-        while(self.board[rO][cO] != self.board[rN][cN] and rN == rO + 1 and self.board[rO][cO]=="*" ):
-            if (cO!= 0 and (cN == cO + 1 or cN == cO - 1)  and self.board[rN][cN]!='#' ):
-                self.move(rO, cO, rN, cN)
-            elif( cO == 0 and cN == cO + 1 and self.board[rN][cN]!='#'):
-                self.move(rO, cO, rN, cN)
-            elif(self.board[rO][cO]=='*' and self.board[rN][cN]=='#'):
-                self.takePiece(rO, cO, rN, cN) 
-            break
+                if (cO!= 0 and (cN == cO + 1 or cN == cO - 1 and cN != 0)  and self.board[rN][cN]!='#' ):
+                    self.move(rO, cO, rN, cN)
+                elif( cO == 0 and cN == cO + 1 and self.board[rN][cN]!='#'):
+                    self.move(rO, cO, rN, cN)
+                elif(self.board[rO][cO]=='*' and self.board[rN][cN]=='#'):
+                    self.takePiece(rO, cO, rN, cN) 
+                break
+            else:
+                print('Player 1: Voilating move')
+                list= self.inputCordinates() 
+                self.playerOneMove(list[0], list[1], list[2], list[3])
         else:
-            print('Player 1: Voilating move')
-            list= self.inputCordinates() 
-            self.playerOneMove(list[0], list[1], list[2], list[3])
-            
+            print('Please enter the right input with the correct format: ')
+            list = self.inputCordinates()
+            self.playerOneMove(list[0], list[1], list[2], list[3], list[4])
+                
     def choosePlayer(self, rO, cO):
         if(self.board[rO][cO]== "*"):
             list= self.inputCordinates() 
@@ -79,43 +107,46 @@ class Board:
             list= self.inputCordinates() 
             self.playerTwoMove(list[0], list[1], list[2], list[3])
 
-    def playerTwoMove(self,rO, cO, rN, cN):
-        while(self.board[rO][cO] != self.board[rN][cN] and rO == rN + 1 and self.board[rO][cO]=="#" ):
-            if (cO!= 0 and (cN == cO + 1 or cN == cO - 1) and self.board[rN][cN]!='*' ):
-                self.move(rO, cO, rN, cN)
-            elif( cO == 0 and cN == cO + 1 and self.board[rN][cN]!='*' ):
-                self.move(rO, cO, rN, cN)
-            elif(self.board[rO][cO]=='#' and self.board[rN][cN]=='*'):
-                self.takePiece(rO, cO, rN, cN)
-                #self.switcher(rO, cO, rN, cN)
-            break
+    def playerTwoMove(self,rO, cO, rN, cN, Error = False):
+        if Error == False:
+            while(self.board[rO][cO] != self.board[rN][cN] and rO == rN + 1 and self.board[rO][cO]=="#" ):
+                #                  right           left
+                if (cO!= 0 and (cN == cO + 1 or cN == cO - 1) and self.board[rN][cN]!='*' ):
+                    self.move(rO, cO, rN, cN)
+                #                     left 
+                elif( cO == 0 and cN == cO + 1 and self.board[rN][cN]!='*' ):
+                    self.move(rO, cO, rN, cN)
+                elif(self.board[rO][cO]=='#' and self.board[rN][cN]=='*'):
+                    self.takePiece(rO, cO, rN, cN)
+                    #self.switcher(rO, cO, rN, cN)
+                break
+            else:
+                print('Player 2: Voilating move')
+                list= self.inputCordinates() 
+                self.playerTwoMove(list[0], list[1], list[2], list[3])
         else:
-            print('Player 2: Voilating move')
-            list= self.inputCordinates() 
-            self.playerTwoMove(list[0], list[1], list[2], list[3])
-    
-    '''    def switcher(self, rowOld, columnOld, rowNew, columnNew):
-        switcher ={
-            rowNew==rowOld-1: self.takePiece,
-            rowNew==rowOld+1: self.takePiece,
-        }
-        return switcher.get(rowOld, columnOld, rowNew, columnNew)
-'''
+            print('Please enter the right input with the correct format: ')
+            list = self.inputCordinates()
+            self.playerTwoMove(list[0], list[1], list[2], list[3], list[4])
 
     def takePiece(self, rowOld, columnOld, rowNew, columnNew):
+        # going up 
         if(rowNew== rowOld - 1):
+            #left
             if (columnNew == columnOld - 1):
                 while(self.board[rowNew-1][columnNew-1]== " "):
                     self.board[rowNew][columnNew] = " "
                     self.move(rowOld,columnOld,rowNew-1, columnNew-1)
+                    self.score(self.playerTurn)
                     break
                 else:
                     print('Violating move')
                     self.choosePlayer(rowOld, columnOld)
-            elif( columnNew== columnOld +1 ):
+            elif( columnNew == columnOld +1 ):
                 while(self.board[rowNew-1][columnNew+1]== " "):
                     self.board[rowNew][columnNew] = " "
                     self.move(rowOld,columnOld,rowNew-1, columnNew+1)
+                    self.score(self.playerTurn)
                     break
                 else:
                     print('Violating move')
@@ -124,7 +155,8 @@ class Board:
             if (columnNew == columnOld - 1):
                 while(self.board[rowNew+1][columnNew-1]== " "):
                     self.board[rowNew][columnNew] = " "
-                    self.move(rowOld,columnOld,rowNew-1, columnNew-1)
+                    self.move(rowOld,columnOld,rowNew+1, columnNew-1)
+                    self.score(self.playerTurn)
                     break
                 else:
                     print("Violating move")
@@ -132,7 +164,8 @@ class Board:
             elif( columnNew== columnOld +1 ):
                 while(self.board[rowNew+1][columnNew+1]== " "):
                     self.board[rowNew][columnNew] = " "
-                    self.move(rowOld,columnOld,rowNew-1, columnNew+1)
+                    self.move(rowOld,columnOld,rowNew+1, columnNew+1)
+                    self.score(self.playerTurn)
                     break
                 else:
                     print("Violating move")
@@ -151,17 +184,21 @@ class Board:
         self.board[rowO][columnO]= self.board[rowN][columnN]
         return a
     turn = 0
+    playerTurn = ''
     def turnKepper(self):
         if( self.turn % 2==0):
             print("Player One's turn")
+            self.playerTurn = 'Player One'
+
         elif(self.turn % 2 == 1):
             print("Player Two's turn")
+            self.playerTurn = 'Player Two'
         else:
             return 1
-        self.turn=self.turn + 1
+        self.turn= self.turn + 1
 
 # part 3 of the program(playing the game)
-    
+    scoreCount = 0
     def play(self):
         startTime = time.time()
         endTime = startTime
@@ -171,27 +208,49 @@ class Board:
         while(value.lower() != 'q'):
             self.turnKepper()
             list = self.inputCordinates()
-            self.playerOneMove(list[0], list[1], list[2], list[3])
+            self.playerOneMove(list[0], list[1], list[2], list[3], list[4])
             self.printBoard()
             self.turnKepper()
             listTwo = self.inputCordinates()
-            self.playerTwoMove(listTwo[0], listTwo[1], listTwo[2], listTwo[3])
+            self.playerTwoMove(listTwo[0], listTwo[1], listTwo[2], listTwo[3], list[4])
             self.printBoard()
+            if self.scoreCount == 9:
+                break
+        for i in self.scores:
+            if self.scores[i] == self.scoreCount:
+                print(f"{i} WINS!!!")
+
         totalTime = time.time() - startTime
         print("Game completed in ", round(totalTime, 2) , "seconds")
     def inputCordinates(self):
-        rowOld = int(input("The row of the piece you want to move: "))
-        columnOld = int(input("The column of the piece you want to move: "))
-        rowNew = int(input("The row where you want your picece to move: "))
-        columnNew = int(input("The column where you want your piece to move: "))
-        return ( rowOld,  columnOld, rowNew, columnNew )
-  
-    
+        Error = False        
+        Oldinput = input(" Enter the indices of the piece you wish to move: ")
+        Newinput = input("Enter the indices of the the place you want your piece to move: ")
+        value = Oldinput
+        columnOld, rowOld, rowNew, columnNew = 0, 0, 0, 0
+        try:
+            columnOld = int(Oldinput.split(',')[1])
+            rowOld = int(Oldinput.split(',')[0])
+            columnNew = int(Newinput.split(',')[1])
+            rowNew = int(Newinput.split(',')[0])
+        except IndexError:
+            Error = True
+        except ValueError:
+            Error = True
+        return ( rowOld,  columnOld, rowNew, columnNew, Error )
+    scores = {
+            
+        }
+    def score( self,turn ):
+
+        if turn in self.scores:
+            self.scores[turn] += 1
+            print(self.scores)
+        else:
+            self.scores[turn] = 1
+        self.scoreCount = max(self.scores.values())
+
+
 game= Board (8,6)
 game.printBoard()
 game.play()
-
-
-
-
-
