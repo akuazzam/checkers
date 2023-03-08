@@ -1,21 +1,29 @@
 import random, time
+from sys import argv
+
+PL1 = 'Player One'
+PL2 = 'Player Two'
 class Board:
     
 # part 1 of the progam( building the board and the pieces)
 
-    def __init__(self, row, column):
-        self.board = self.board = [[ 0 for c in range (column + 1)] for i in range (row + 1)]
+    def __init__(self, row, column, skipRule = False):
+        self.board = [[ 0 for c in range (column + 1)] for i in range (row + 1)]
         self.SetplayerOne()
         self.SetplayerTwo()
-        self.printHelper()
-        self.printRules()
 
+        self.printHelper()
+        if not skipRule:
+            self.printRules()
+    
     def printBoard(self):
         for i in self.board:
             for j in i:
                 print(j,end = " ")
             print()
-    def printHelper (self):
+    
+    # remove double forloop. use one and always set row to 0
+    def printHelper(self):
         for i in range(1):
             for j in range(7):
                 self.board[i][j] = j
@@ -24,6 +32,8 @@ class Board:
                 self.board[i][j] = i
         self.board[0][0] = '+'
 
+    # collapse nested if conditionals
+    # for eg, use do i ==1 and j%2 == 0
     def SetplayerOne(self):
         for i in range(1, 4):
             for j in range(1,7):
@@ -64,6 +74,8 @@ class Board:
                         self.board[i][j]="#"
                 else:
                     continue
+    
+    # todo: add extra new lines after each print statement
     def printRules(self):
             print('Before starting the game, Let us look at some basic rules of the game')
             time.sleep(2)
@@ -81,6 +93,15 @@ class Board:
 # part 2 of the program(implementing movments of the pieces)
     def playerOneMove(self,rO, cO, rN, cN, Error = False ):
         if Error == False:
+            # make the checks here clearer:
+                # put the checks in a separate function: def isPlayerOneMoveValid
+                # 1. coordinates canot be the same
+                # 2. Player one can only move his pieces. ie, *
+                # 3. new coordinates point to an empty location
+                # 4. new coordinates can only make a valid move (ie r + 1 and c -1 or c + 1)
+                # 5. new coordinates do not go out of bounds
+
+            # does this need to be in a while loop? 
             while(self.board[rO][cO] != self.board[rN][cN] and rN == rO + 1 and rN != 0 and self.board[rO][cO]=="*" and cN != 0):
 
                 if (cO!= 0 and (cN == cO + 1 or cN == cO - 1 and cN != 0)  and self.board[rN][cN]!='#' ):
@@ -129,9 +150,11 @@ class Board:
             list = self.inputCordinates()
             self.playerTwoMove(list[0], list[1], list[2], list[3], list[4])
 
+    # pass player parameter here 
     def takePiece(self, rowOld, columnOld, rowNew, columnNew):
         # going up 
-        if(rowNew== rowOld - 1):
+        # todo check based on the player; ie player == PL2
+        if(rowNew == rowOld - 1):
             #left
             if (columnNew == columnOld - 1):
                 while(self.board[rowNew-1][columnNew-1]== " "):
@@ -183,6 +206,7 @@ class Board:
         a=  self.board[rowO][columnO]
         self.board[rowO][columnO]= self.board[rowN][columnN]
         return a
+    # move these to the init function
     turn = 0
     playerTurn = ''
     def turnKepper(self):
@@ -200,11 +224,10 @@ class Board:
 # part 3 of the program(playing the game)
     scoreCount = 0
     def play(self):
-        startTime = time.time()
-        endTime = startTime
+        startTime = endTime = time.time()
         value = ""
         print("To quit the game press Q. To continue to the game press Enter")
-        value= input()
+        value = input()
         while(value.lower() != 'q'):
             self.turnKepper()
             list = self.inputCordinates()
@@ -223,10 +246,10 @@ class Board:
         totalTime = time.time() - startTime
         print("Game completed in ", round(totalTime, 2) , "seconds")
     def inputCordinates(self):
+        # use camelCase convention
         Error = False        
         Oldinput = input(" Enter the indices of the piece you wish to move: ")
         Newinput = input("Enter the indices of the the place you want your piece to move: ")
-        value = Oldinput
         columnOld, rowOld, rowNew, columnNew = 0, 0, 0, 0
         try:
             columnOld = int(Oldinput.split(',')[1])
@@ -250,7 +273,10 @@ class Board:
             self.scores[turn] = 1
         self.scoreCount = max(self.scores.values())
 
-
-game= Board (8,6)
+game = None
+if len(argv) > 1 and argv[1] == 'skip-rules':
+    game = Board(8, 6, True)
+else:
+    game = Board(8,6)
 game.printBoard()
 game.play()
