@@ -16,7 +16,7 @@ The following features are implemented in this program:
 Here are the rules of playing this game:
 - The player should enter the indeix of the pieces you want to move and where you want to move it. First select the index of the cooridante you want to me. Suppose you want to move a piece located at row 3 column 2, you should input '3,2'
 - Then select the index of where you want to move the piece. Suppose you want to move a piece to row 4 column 1, you should input '4,1'
-- Do not input an index value which violates a move. A violating move is a move when a piece jumps more than one step, goes back or tries to take the other player's piece illegaly.
+- A violating move is a move when a piece jumps more than one step, goes back or tries to take the other player's piece illegaly.
 - The game will end when either of the players have no moves to make or do not have any piece to move.
 - To quit the game at any point enter 'q'
 
@@ -26,11 +26,7 @@ Here are the rules of playing this game:
 
 Copyright 2023 Akrem Ahmed
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
