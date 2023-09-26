@@ -1,4 +1,4 @@
-#  Project- Checkers!
+#  Project- checkers!
 
 ## Summary
 This GitHub repository is a personal project that allows two users to play the traditional game of checkers in Python.
